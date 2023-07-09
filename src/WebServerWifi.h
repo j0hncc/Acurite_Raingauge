@@ -5,7 +5,7 @@
 #include <WiFiClient.h>
 #include <Streaming.h>
 
-#include "secrets.h" :
+#include "secrets.h"
 
 int freeMemory(){ return ESP.getFreeHeap(); }
 
