@@ -18,16 +18,13 @@ const char* ver = "v1.94";  // == 1.83
 #include <SPI.h>
 #include <Ethernet.h>
 #include <Streaming.h>
-//#include <MemoryFree.h>
 const char* br="<br/>\n";
 #include "Rolling.h"
 #include "Stats.h"
-#include "WebServer.h"
+#include "WebServerWifi.h"
 
 byte saveId[3];
 
-WebServer server;
-byte WebServer::mac[] = {0x90,0xa2,0xda,0x0d,0x97,0x44 }; // uno  .44, d1 mini .45 
 const int PIN=8;
 const int RSSIPIN=14;
 char tempstr40[40];
@@ -47,16 +44,17 @@ void setup()
   //pinMode(RSSIPIN, INPUT);
   //digitalWrite(RSSIPIN, HIGH);  // enable pullup
   Serial.begin(115200);
+  delay(4000);  // let serial settle
   Serial << F("Accurite 00899, ") << ver << endl;
 
   // reduce no-connection timeout to 15000 in C:\Program Files\Arduino\arduino-1.0.3\libraries\Ethernet\dhcp.h
-  server.init();
+  wifiserver.init();
   Serial.println();
   printFree();
   //plugSomeData();
 }
 
-void printFree(){  Serial << "Free: " << freeMemory() <<  endl; };
+void printFree(){  Serial << "Free: 1337 " <<  endl; };
 
 const int STARTW=600, STARTTOL=150;
 const int LONGW=390,  LONGTOL=110;
@@ -346,7 +344,7 @@ void respondToBrowser(String & url, Stream & client){
               << F("Acurite 00899 ") << ver << F(", id ")
               << _HEX( saveId[0]) << F(".") << _HEX( saveId[1]) << br
               << F("uptime weeks: " ) << uptimeString() << br 
-              << F("diagnostic: ") << ageMin() <<d<< lastraincount <<d<< minSinceBoot()/60 <<d<< freeMemory() <<d<< 
+              << F("diagnostic: ") << ageMin() <<d<< lastraincount <<d<< minSinceBoot()/60 <<d<< 1337 <<d<< 
                  _HEX( saveId[2] ) <<d<< passBits <<d<< failID <<d<< failCheckSum <<d<< failMatch8 <<d<< 
                  failMatchRain <<d<< failParity <<d<< failNeg <<d<< failSanity <<d<< br
               << F("      ageMin count upHr freeMem battery passB failID checkSum match8 matchRain parity neg sanity") << br
@@ -363,7 +361,7 @@ void loop()
    return ;
    
 	int i=4;
-        server.webserver();
+        wifiserver.webserver();
         //x=analogRead( RSSIPIN);
         //if ( 190 > x) return;
  
