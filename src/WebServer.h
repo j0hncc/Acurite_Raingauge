@@ -1,6 +1,5 @@
 #include <Ethernet.h>
-// #include <MemoryFree.h>
-int freeMemory(){ return 1337; }
+#include <MemoryFree.h>
 
 void respondToBrowser(String & url, Stream & client);  // jcc 8/16/18
 

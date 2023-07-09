@@ -6,8 +6,9 @@
 3/25/2015    1.85    mac addr set here (2nd receiver built)
 8/18/2018    1.90    Change title to PV.  Original HW!!
 7/08/2023    1.94    Change title to Owl Ridge
+7/09/2023    2.01    Refactor and first pass at implement esp8266 (wemos) version
 */
-const char* ver = "v1.94";  // == 1.83
+const char* ver = "v2.01";  // == 1.83
 #include "Arduino.h"   // replace this by "WProgram.h" when your IDE is older then 1.0
  
 #define DEBUG true // flag to turn on/off Serial debugging.  Need FALSE for webserver memory!
@@ -54,7 +55,7 @@ void setup()
   //plugSomeData();
 }
 
-void printFree(){  Serial << "Free: 1337 " <<  endl; };
+void printFree(){  Serial << "Free: " <<  freeMemory() <<  endl; };
 
 const int STARTW=600, STARTTOL=150;
 const int LONGW=390,  LONGTOL=110;
@@ -344,7 +345,7 @@ void respondToBrowser(String & url, Stream & client){
               << F("Acurite 00899 ") << ver << F(", id ")
               << _HEX( saveId[0]) << F(".") << _HEX( saveId[1]) << br
               << F("uptime weeks: " ) << uptimeString() << br 
-              << F("diagnostic: ") << ageMin() <<d<< lastraincount <<d<< minSinceBoot()/60 <<d<< 1337 <<d<< 
+              << F("diagnostic: ") << ageMin() <<d<< lastraincount <<d<< minSinceBoot()/60 <<d<< freeMemory() <<d<< 
                  _HEX( saveId[2] ) <<d<< passBits <<d<< failID <<d<< failCheckSum <<d<< failMatch8 <<d<< 
                  failMatchRain <<d<< failParity <<d<< failNeg <<d<< failSanity <<d<< br
               << F("      ageMin count upHr freeMem battery passB failID checkSum match8 matchRain parity neg sanity") << br
@@ -356,9 +357,6 @@ int x;
 int usHi, usLo;
 void loop() 
 {
-   delay(500);
-   Serial << "hi " << endl;
-   return ;
    
 	int i=4;
         wifiserver.webserver();
