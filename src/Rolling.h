@@ -7,7 +7,7 @@ public:
 	int siz;  // indices into data[]
 	int curr; // "
 
-	Rolling(int sizz, long durr,char* lbl): label(lbl),begintime(0), duration(durr), siz(sizz){
+	Rolling(int sizz, long durr,const char* lbl): label(lbl),begintime(0), duration(durr), siz(sizz){
             data = (int *) malloc(siz * sizeof(int));
             for (int i=0; i<siz; i++) data[i]=0;
         }
