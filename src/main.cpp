@@ -8,7 +8,7 @@
 7/08/2023    1.94    Change title to Owl Ridge
 7/09/2023    2.01    Refactor and first pass at implement esp8266 (wemos) version
 */
-const char* ver = "v2.01";  // == 1.83
+const char* ver = "v2.02";  // == 1.83
 #include "Arduino.h"   // replace this by "WProgram.h" when your IDE is older then 1.0
  
 #define DEBUG true // flag to turn on/off Serial debugging.  Need FALSE for webserver memory!
@@ -91,7 +91,7 @@ float daysSinceBoot()
 char * uptimeString()
 {
 	unsigned long m=minSinceBoot();
-	static char s[14];
+	static char s[20];
 	//sprintf(s, "%4lu:%02lu:%02lu", m/60/24, (m % (60*24)) / 60, m % 60);
 	sprintf(s, "%4lu:%02lu:%02lu:%02lu", m/60/24/7, (m % (60*24*7))/60/24, (m % (60*24)) / 60, m%60);  // weeks, days, hours
 	return s;
@@ -250,7 +250,7 @@ bool evenParity( byte *b)
      b0p += (b[0] >> i) & 1;
      b1p += (b[1] >> i) & 1;
    } 
-  return  !  ( b0p & 1 + b1p & 1);
+  return  !  ( b0p & (1 + b1p) & 1);  // TBD note compiler warning-- is this right:   b0p & (1 + b1p) & 1  ?????
 }
 
 struct RSSI_Led 
