@@ -17,7 +17,7 @@ class WebServer {
     // (port 80 is default for HTTP):
     EthernetServer server;
     
-    static char* br;
+    const static char* br;
     
     WebServer() : server(80) {};
     
@@ -34,7 +34,6 @@ class WebServer {
 
 void webserver() {
   // listen for incoming clients
-  boolean odd=false;
   Serial << "";
   EthernetClient client = server.available();
   // Serial << "End: " << millis() << endl;
@@ -89,5 +88,5 @@ void receivedLine( String& s, String& name)
 };
 
     //byte WebServer::mac[] = {0x90,0xa2,0xda,0x0d,0x97,0x44 };  // set this in your mainline code
-    char* WebServer::br="<br>\n";
+    const char* WebServer::br="<br>\n";
 

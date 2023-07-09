@@ -6,8 +6,9 @@
 3/25/2015    1.85    mac addr set here (2nd receiver built)
 8/18/2018    1.90    Change title to PV.  Original HW!!
 7/08/2023    1.94    Change title to Owl Ridge
+7/09/2023    1.94b   Remove some compiler warnings for const char, etc
 */
-const char* ver = "v1.94";  // == 1.83
+const char* ver = "v1.94b";  // == 1.83
 #include "Arduino.h"   // replace this by "WProgram.h" when your IDE is older then 1.0
  
 #define DEBUG true // flag to turn on/off Serial debugging.  Need FALSE for webserver memory!
