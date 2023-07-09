@@ -40,12 +40,13 @@ void receivedData(byte bdat[][8]);
 // Arduino Setup
 void setup() 
 {          
+   
   // initialize the digital pin as an output.
   // Pin 13 has an LED connected on most Arduino boards:
-  pinMode(PIN, INPUT);
+  // pinMode(PIN, INPUT);   // pin 8 crashes wemos (witty)
   //pinMode(RSSIPIN, INPUT);
   //digitalWrite(RSSIPIN, HIGH);  // enable pullup
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial << F("Accurite 00899, ") << ver << endl;
 
   // reduce no-connection timeout to 15000 in C:\Program Files\Arduino\arduino-1.0.3\libraries\Ethernet\dhcp.h
@@ -253,38 +254,6 @@ bool evenParity( byte *b)
   return  !  ( b0p & 1 + b1p & 1);
 }
 
-int x;
-int usHi, usLo;
-void loop() 
-{
-	int i=4;
-        server.webserver();
-        //x=analogRead( RSSIPIN);
-        //if ( 190 > x) return;
- 
-	if  (!startBitsB()) return;  // wait for 4 start bits
-        //Serial << "bits" << endl;
-	for ( ; i < PKTLEN; i++)
-        {
-           usHi = readPulse( PIN, HIGH);
-           usLo = readPulse( PIN, LOW);
-           durs[i] = (usHi > usLo) ? LONGW : SHORTW;
-        }
-
-        passBits++; 
-	byte bdat[3][8] ;
-	convert( durs, bdat);
-        //Serial << " x " << x << endl;
-	//if (bdat[0][0]==0x15 && bdat[0][1]==0x7e && bdat[0][2]==0xf0) {
-        if (   !strncmp((char *)bdat[0], (char *)bdat[1], 2) )
-        {
-                Serial << _HEX( bdat[0][0]) << ':' << _HEX( bdat[0][1]) << endl;
-                receivedData( bdat);
-	}
-        else failID++;
-
-} // loop
-
 struct RSSI_Led 
 {  // RAII
 	int pin;
@@ -385,3 +354,38 @@ void respondToBrowser(String & url, Stream & client){
 
 }
 
+int x;
+int usHi, usLo;
+void loop() 
+{
+   delay(500);
+   Serial << "hi " << endl;
+   return ;
+   
+	int i=4;
+        server.webserver();
+        //x=analogRead( RSSIPIN);
+        //if ( 190 > x) return;
+ 
+	if  (!startBitsB()) return;  // wait for 4 start bits
+        //Serial << "bits" << endl;
+	for ( ; i < PKTLEN; i++)
+        {
+           usHi = readPulse( PIN, HIGH);
+           usLo = readPulse( PIN, LOW);
+           durs[i] = (usHi > usLo) ? LONGW : SHORTW;
+        }
+
+        passBits++; 
+	byte bdat[3][8] ;
+	convert( durs, bdat);
+        //Serial << " x " << x << endl;
+	//if (bdat[0][0]==0x15 && bdat[0][1]==0x7e && bdat[0][2]==0xf0) {
+        if (   !strncmp((char *)bdat[0], (char *)bdat[1], 2) )
+        {
+                Serial << _HEX( bdat[0][0]) << ':' << _HEX( bdat[0][1]) << endl;
+                receivedData( bdat);
+	}
+        else failID++;
+
+} // loop
