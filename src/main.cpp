@@ -4,19 +4,21 @@
 3/20/2015    1.83    Took this as the latest (Mom's computer is gone).  Id change from 157E to 1730
 3/24/2015    1.84    Eliminate id check, use id received if matches
 3/25/2015    1.85    mac addr set here (2nd receiver built)
-8/18/2018    1.90    Change title.  Original HW!!
+8/18/2018    1.90    Change title to PV.  Original HW!!
+7/08/2023    1.94    Change title to Owl Ridge
 */
-const char* ver = "v1.90";  // == 1.83
+const char* ver = "v1.94";  // == 1.83
 #include "Arduino.h"   // replace this by "WProgram.h" when your IDE is older then 1.0
  
-#define DEBUG false // flag to turn on/off Serial debugging.  Need FALSE for webserver memory!
+#define DEBUG true // flag to turn on/off Serial debugging.  Need FALSE for webserver memory!
 #define Serial if(DEBUG)Serial 
 
-#include <Time.h>
+#include <stdio.h>
+#include <TimeLib.h>
 #include <SPI.h>
 #include <Ethernet.h>
 #include <Streaming.h>
-#include <MemoryFree.h>
+//#include <MemoryFree.h>
 const char* br="<br/>\n";
 #include "Rolling.h"
 #include "Stats.h"
@@ -25,11 +27,17 @@ const char* br="<br/>\n";
 byte saveId[3];
 
 WebServer server;
-byte WebServer::mac[] = {0x90,0xa2,0xda,0x0d,0x97,0x44 }; // lakehouse .44 
+byte WebServer::mac[] = {0x90,0xa2,0xda,0x0d,0x97,0x44 }; // uno  .44, d1 mini .45 
 const int PIN=8;
 const int RSSIPIN=14;
 char tempstr40[40];
 
+// Prototypes
+void logTime(int hundr);
+void printFree();
+void receivedData(byte bdat[][8]);
+
+// Arduino Setup
 void setup() 
 {          
   // initialize the digital pin as an output.
@@ -48,7 +56,7 @@ void setup()
 }
 
 void printFree(){  Serial << "Free: " << freeMemory() <<  endl; };
-    
+
 const int STARTW=600, STARTTOL=150;
 const int LONGW=390,  LONGTOL=110;
 const int SHORTW=185, SHORTTOL=95;
@@ -271,7 +279,7 @@ void loop()
         if (   !strncmp((char *)bdat[0], (char *)bdat[1], 2) )
         {
                 Serial << _HEX( bdat[0][0]) << ':' << _HEX( bdat[0][1]) << endl;
-                recievedData( bdat);
+                receivedData( bdat);
 	}
         else failID++;
 
@@ -292,7 +300,7 @@ bool checkSum( byte *b)
    return ( sum & 0xff ) == b[7];
 }
 
-void recievedData(byte bdat[][8])
+void receivedData(byte bdat[][8])
 {
     int i;
     if ( ! checkSum( bdat[0] ) || ! checkSum( bdat[1]))
@@ -351,11 +359,12 @@ boolean compareBytes( byte dat[], int one, int theother){
 }
 */
 
+
 void respondToBrowser(String & url, Stream & client){
           client.print( F("HTTP/1.0 200 OK\nContent-Type: text/html\nConnnection: close\n\n<!DOCTYPE HTML>\n<html>\n<meta http-equiv=\"refresh\" content=\"" ));
           client.print( 60);  // (odd=!odd)? 4 : 7);
           client.println("\">");
-          client <<  F("<title>Pecan Valley Rainfall</title><h2>Pecan Valley Rain in Hundredths of an Inch</h2>");
+          client <<  F("<title>Owl Ridge2 Rainfall</title><h2>Owl Ridge2 Rain in Hundredths of an Inch</h2>");
 	  advanceStats();   // 1.27
           Stats::upminutes = minSinceBoot();
           Stats::report(Stats::L1, client);
